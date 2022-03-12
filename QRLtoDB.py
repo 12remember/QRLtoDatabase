@@ -8,7 +8,7 @@
 
 __author__ = ['12remember']
 __co_author__ = ['0xff0']
-__version__ = "0.1"
+__version__ = "1.0"
 __date__ = '2022.01.29'
 
 
