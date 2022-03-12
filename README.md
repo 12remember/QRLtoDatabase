@@ -59,7 +59,7 @@ The aim for this project is to make QRL blockchain data accessible in popular da
 
 -db, --database Choose the database {sqlite,postgres,neo4j,mongodb} 
 -s, --source Need to select source (QRL state folder, ex: /home/ubuntu/.qrl/data/state)
--n, --node Choose to run on while the node is offline {offline}  ! Warning 
+-n, --node Choose to run while the node is offline (faster to start up, for dev) {offline}  ! Warning 
 
   ```
 ## Warning
