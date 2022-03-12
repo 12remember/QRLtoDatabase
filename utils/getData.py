@@ -273,9 +273,7 @@ class getData:
                 print('--------------------') 
                 print('^^^^^^^^^^^^^^^^')
                 sys.exit("Error message") 
-
-            print(dictData)
-            
+        
             addressData = {}    
             if "balance" in dictData:
                 addressData["balance"] = dictData["balance"]
