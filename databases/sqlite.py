@@ -42,8 +42,8 @@ class SqliteDB(object):
                 print(e)
                 print(traceback.format_exc())
                 eData={}
-                dataKeys = [k for k in data[0].keys()]
-                dataKeyType = [type(k) for k in data[0].keys()]
+                dataKeys = [k for k in data.keys()]
+                dataKeyType = [type(k) for k in data.keys()]
                 eData["date"], eData["location"], eData["traceback"], eData["data"] =  datetime.now(), 'insertData', str(traceback.format_exc()), str(data)
                 eData["data_keys"], eData["data_key_type"], eData["error"], eData["blocknumber"] =  str(dataKeys), str(dataKeyType), str(e), "" 
                 table, data = "errors" , eData

@@ -28,19 +28,22 @@ DB_CONNECTION = SERVER_CONNECTION.qrldata
 class MongoDB(object):
 
     def insertData(coll, data):
-        try:         
+        try:  
+
+            if data is None:
+                 data = {} 
+                   
             if  (coll == 'addresses' and  'address' in data):
                 data["_id"] = data["address"]
             #    del data["address"]    
             
             if (coll == 'blocks' and 'block_number' in data):
-                data["_id"] = data["block_number"]
-            #    del data["block_number"]     
+                data["_id"] = data["block_number"]  
+
+            if 'extra_nonce' in data:
+                data["extra_nonce"] = str(data["extra_nonce"]) # sometimes int length passes max length mongodb can handel > therefor it will be saved as an string
 
             
-            #if 'extra_nonce' in data:
-            #    data["extra_nonce"] = ""
-  
             coll = DB_CONNECTION[coll]
             coll.insert_one(data)
 
@@ -53,8 +56,15 @@ class MongoDB(object):
             print(e)
             print(traceback.format_exc())
             eData={}
+            try:
+                dataKeys = [k for k in data.keys()]
+                dataKeyType = [type(k) for k in data.keys()]
+            except:
+                dataKeys = ''
+                dataKeyType = ''
+                    
             eData["date"], eData["location"], eData["traceback"], eData["data"] =  datetime.now(), 'insertData', str(traceback.format_exc()), str(data)
-            eData["error"], eData["blocknumber"] =  str(e), "" 
+            eData["data_keys"], eData["data_key_type"], eData["error"], eData["blocknumber"] =  str(dataKeys), str(dataKeyType), str(e), ""  
             coll, data = "errors" , eData
             MongoDB.insertData(coll, data)      
             print('Error while inserting data into Database')
