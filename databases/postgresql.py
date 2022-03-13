@@ -35,11 +35,12 @@ class PostgresDB(object):
         DB_CONNECTION = PostgresDB.connect()
         with DB_CONNECTION.cursor() as cur:
             try: 
-                
+        
                 if data[0] is not None: # why is data[0] sometimes none ??
                     
                     columns = list(data[0].keys())  # ugly coding [0], but it works > data is sent in a list otherwhise got error querey_string, dont know why 
                     values  = [tuple(value.values()) for value in data]
+
                     query_string = sql.SQL(SQL_INSERT_DATA_DYNAMIC).format(
                         table = sql.Identifier(table),
                         columns= sql.SQL(', ').join(map(sql.Identifier, columns)),
@@ -280,11 +281,10 @@ class PostgresDB(object):
         with DB_CONNECTION.cursor() as cur:
             try:
                 transactionProcessed = False
-                tData = {}
+
                 if "masterAddr" in t:
                     PostgresDB.getAddressData(source, t["masterAddr"], timestamp, block_number)
-                
-                
+                            
                 if "coinbase" in t:        
                     table, data = 'transactions_coinbase', [getData.getTransactionDataCoinbase(t, block_number, timestamp)]
                     PostgresDB.getAddressData(source, t["coinbase"]["addrTo"], timestamp, block_number)
@@ -299,7 +299,7 @@ class PostgresDB(object):
 
                         for transfer in transfers:                                             
                             table, data = 'transactions_transfer', [getData.getTransactionDataTransfer(t, block_number, timestamp, transfer)] 
-                            PostgresDB.getAddressData(source, transfer["addr_to"] , timestamp, block_number)
+                            PostgresDB.getAddressData(source, transfer["addr_to"] , timestamp, block_number) 
                             PostgresDB.insertData(table, data)
                         transactionProcessed = True
 

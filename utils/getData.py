@@ -71,7 +71,6 @@ class getData:
         
         if "masterAddr" in t:
             tData["master_addr"] = "Q" + base64.b64decode(t["masterAddr"]).hex()
-            #PostgresDB.getAddressData(db, t["masterAddr"], tData["timestamp"])
 
         if "publicKey" in t:
             tData["public_key"] = base64.b64decode(t["publicKey"]).hex()
@@ -95,8 +94,8 @@ class getData:
         return tData
 
 
-    def getTransactionDataTransfer(t, block_number, timestamp, transfer):        
-        tData = getData.getTransactionData(t, block_number, timestamp)    
+    def getTransactionDataTransfer(t, block_number, timestamp, transfer):  
+        tData = getData.getTransactionData(t, block_number, timestamp)
         tData["addr_to"] = "".join(["Q" , base64.b64decode(transfer["addr_to"]).hex()])
         tData["amount"] = transfer["amount"]                                             
         return tData
@@ -250,6 +249,13 @@ class getData:
         if len(tData['type']) == 0:
             tData['type'] = "unkown"
         
+        for key, value in tData.items() :
+            print(key)
+        print('--------------------')     
+        print('--------------------')
+        print('transaction unkown')  
+        sys.exit("transaction unkown")
+        
         tData['data'] = str(t)
         return tData      
     
@@ -272,7 +278,7 @@ class getData:
                 print('--------------------')     
                 print('--------------------') 
                 print('^^^^^^^^^^^^^^^^')
-                sys.exit("Error message") 
+                sys.exit("length of address > 4  check for more data to write") 
         
             addressData = {}    
             if "balance" in dictData:
@@ -283,8 +289,6 @@ class getData:
                 
             if "otsBitfield" in dictData:
                 addressData["ots_bitfield"] = dictData["otsBitfield"]
-                print(addressData)
-                sys.exit("Error message") 
         
             if "transactionHashes" in dictData:
                 addressData["transaction_hashes"] = dictData["transactionHashes"]
