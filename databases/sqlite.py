@@ -22,16 +22,19 @@ class SqliteDB(object):
 
         def insertData(table, data):
             cur = DB_CONNECTION.cursor()
-            try:                         
-                if 'initial_balances' in data:
-                    del data["initial_balances"]    #sqlite cant handle this value
+            try:
+                
+                if data is not None: # why is data sometimes none ??
+                                             
+                    if 'initial_balances' in data:
+                        del data["initial_balances"]    #sqlite cant handle this value
 
-                columns = list(data.keys())
-                values  = list(data.values())  
-                                                   
-                query_string = ' '.join(['INSERT INTO ', table,  ' (', ', '.join(columns), ') VALUES (', ', '.join(['?'] * len(columns)), ')'])   
-                cur.execute(query_string, values)
-                DB_CONNECTION.commit()
+                    columns = list(data.keys())
+                    values  = list(data.values())  
+                                                       
+                    query_string = ' '.join(['INSERT INTO ', table,  ' (', ', '.join(columns), ') VALUES (', ', '.join(['?'] * len(columns)), ')'])   
+                    cur.execute(query_string, values)
+                    DB_CONNECTION.commit()
     
             except sqlite3.IntegrityError:
                 print('already got that one')
