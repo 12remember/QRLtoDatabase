@@ -30,22 +30,21 @@ class MongoDB(object):
     def insertData(coll, data):
         try:  
 
-            if data is None:
-                 data = {} 
+            if data is not None: # why is data sometimes none ??
                    
-            if  (coll == 'addresses' and  'address' in data):
-                data["_id"] = data["address"]
-            #    del data["address"]    
-            
-            if (coll == 'blocks' and 'block_number' in data):
-                data["_id"] = data["block_number"]  
+                if  (coll == 'addresses' and  'address' in data):
+                    data["_id"] = data["address"]
+                #    del data["address"]    
+                
+                if (coll == 'blocks' and 'block_number' in data):
+                    data["_id"] = data["block_number"]  
 
-            if 'extra_nonce' in data:
-                data["extra_nonce"] = str(data["extra_nonce"]) # sometimes int length passes max length mongodb can handel > therefor it will be saved as an string
+                if 'extra_nonce' in data:
+                    data["extra_nonce"] = str(data["extra_nonce"]) # sometimes int length passes max length mongodb can handel > therefor it will be saved as an string
 
-            
-            coll = DB_CONNECTION[coll]
-            coll.insert_one(data)
+                
+                coll = DB_CONNECTION[coll]
+                coll.insert_one(data)
 
 
         except pymongo.errors.DuplicateKeyError:

@@ -36,18 +36,17 @@ class PostgresDB(object):
         with DB_CONNECTION.cursor() as cur:
             try: 
                 
-                if data[0] is None:
-                     data[0]= {}  # why is data[0] sometimes none ??
-
-                columns = list(data[0].keys())  # ugly coding [0], but it works > data is sent in a list otherwhise got error querey_string, dont know why 
-                values  = [tuple(value.values()) for value in data]
-                query_string = sql.SQL(SQL_INSERT_DATA_DYNAMIC).format(
-                    table = sql.Identifier(table),
-                    columns= sql.SQL(', ').join(map(sql.Identifier, columns)),
-                    values= sql.SQL(', ').join(sql.Placeholder()*len(values)),
-                    ).as_string(cur)
-                cur.execute(query_string, values)
-                DB_CONNECTION.commit()
+                if data[0] is not None: # why is data[0] sometimes none ??
+                    
+                    columns = list(data[0].keys())  # ugly coding [0], but it works > data is sent in a list otherwhise got error querey_string, dont know why 
+                    values  = [tuple(value.values()) for value in data]
+                    query_string = sql.SQL(SQL_INSERT_DATA_DYNAMIC).format(
+                        table = sql.Identifier(table),
+                        columns= sql.SQL(', ').join(map(sql.Identifier, columns)),
+                        values= sql.SQL(', ').join(sql.Placeholder()*len(values)),
+                        ).as_string(cur)
+                    cur.execute(query_string, values)
+                    DB_CONNECTION.commit()
             
             except psycopg2.errors.UniqueViolation:
                 print('already got that one')
