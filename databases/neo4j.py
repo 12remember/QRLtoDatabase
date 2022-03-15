@@ -130,6 +130,8 @@ class Neo4jDB(object):
                 except:
                     blockHeightInDB = 0    
 
+                if blockheightBC < blockHeightInDB:
+                    print('current blockheight in database is heigher than node')
                     
                 print(" ".join(["Parsing block" , str(blockHeightInDB) , "/" , str(blockheightBC)])) 
                 for i in range(blockHeightInDB+1 , blockheightBC+1):                       

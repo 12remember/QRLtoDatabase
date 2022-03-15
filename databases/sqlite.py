@@ -154,10 +154,15 @@ class SqliteDB(object):
                 blockheightBC = getData.getBlockHeight(source)                
                 cur.execute(SQL_GET_BLOCKHEIGHT_IN_DB_SQLITE)     
                 blockHeightInDB = cur.fetchone()
+                
+                
                 if blockHeightInDB != None: 
                     blockHeightInDB = int(blockHeightInDB[0]) # check latest block in database
                 else:
                     blockHeightInDB = 0
+    
+                if blockheightBC < blockHeightInDB:
+                    print('current blockheight in database is heigher than node')
         
                 for i in range(blockHeightInDB , blockheightBC+1):                       
                     print(" ".join(["Parsing block" , str(i) , "/" , str(blockheightBC)]))  

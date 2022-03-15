@@ -134,14 +134,11 @@ class PostgresDB(object):
                 for query in SQL_CREATE_TABLES_RAW :
                     cur.execute(query) 
                 
-                for query in SQL_CREATE_TABLES_AGG:
-                    cur.execute(query)   
                 
                 DB_CONNECTION.commit()    
                 print('Tables Created')        
             except (psycopg2.Error, psycopg2.DatabaseError , psycopg2.DataError) as e:
                 print(e)
-                print(data)
                 print('Psycopg2 error while Creating Tables') 
                 raise
             except Exception as e:
@@ -169,7 +166,6 @@ class PostgresDB(object):
                     pass
             except (psycopg2.Error, psycopg2.DatabaseError , psycopg2.DataError) as e:
                 print(e)
-                print(data)
                 print('Psycopg2 error while dropping Database')
                 raise                            
             except Exception as e:
@@ -195,7 +191,6 @@ class PostgresDB(object):
             
             except (psycopg2.Error, psycopg2.DatabaseError , psycopg2.DataError) as e:
                 print(e)
-                print(data)
                 print('Psycopg2 error while dropping Tables')
                 raise                    
             except Exception as e:
@@ -220,7 +215,6 @@ class PostgresDB(object):
 
             except (psycopg2.Error, psycopg2.DatabaseError , psycopg2.DataError) as e:
                 print(e)
-                print(data)
                 print('Psycopg2 error while truncate Tables')
                 raise                   
             except Exception as e:
@@ -247,7 +241,10 @@ class PostgresDB(object):
                     blockHeightInDB = int(blockHeightInDB[0]) # check latest block in database
                 else:
                     blockHeightInDB = 0
-        
+                    
+                if blockheightBC < blockHeightInDB:
+                    print('current blockheight in database is heigher than node')
+                
                 for i in range(blockHeightInDB , blockheightBC+1):                       
                     print(" ".join(["Parsing block" , str(i) , "/" , str(blockheightBC)]))  
                     
