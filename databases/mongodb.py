@@ -133,7 +133,10 @@ class MongoDB(object):
                 blockHeightInDB = blockHeightInDB["block_number"]
             else:
                 blockHeightInDB = 0
-                
+            
+            if blockheightBC < blockHeightInDB:
+                print('current blockheight in database is heigher than node')  
+                  
             for i in range(blockHeightInDB , blockheightBC+1):                       
                 print(" ".join(["Parsing block" , str(i) , "/" , str(blockheightBC)]))  
                 blockData = getData.getBlockData(i, source)                

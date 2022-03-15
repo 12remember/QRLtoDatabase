@@ -241,8 +241,9 @@ if __name__ == "__main__":
             parser.error('Select a database, example: -db sqlite')            
         elif args.source is None:
             parser.error('Select source (qrl state folder), example: -s ~/.qrl/data/state/')                         
-        elif args.node == 'offline' and ask_confirm("Confirm that the Node is NOT running !"):  
-            getData(args.source, args.database)
+        elif args.node == 'offline':
+            if ask_confirm("Confirm that the Node is NOT running !"):
+                getData(args.source, args.database)
                         
         else:      
             subprocess.call(['bash', './utils/bootstrap/CreateQRLBootstrap.sh', args.source])

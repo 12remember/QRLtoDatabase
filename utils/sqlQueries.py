@@ -144,19 +144,6 @@ SQL_CREATE_TABLES_RAW = [
 
 ]
 
-SQL_CREATE_TABLES_AGG = [
-
-'''CREATE TABLE IF NOT EXISTS analytics_topstats_transactions_day 
-    (block_number BIGINT PRIMARY KEY,
-    address TEXT REFERENCES addresses(address)    
-    )''',    
-
-'''CREATE TABLE IF NOT EXISTS analytics_topstats_transactions_week 
-    (block_number BIGINT PRIMARY KEY,
-    address TEXT REFERENCES addresses(address)    
-    )''', 
-
-]
 
 
 SQL_GET_BLOCKHEIGHT_IN_DB_POSTGRES = 'SELECT "block_number" FROM public."blocks" ORDER BY "block_number" DESC LIMIT 1'
