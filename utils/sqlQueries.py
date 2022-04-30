@@ -1,20 +1,48 @@
 SQL_CREATE_DATABASE = 'CREATE DATABASE'
 
+RAW_TABLES_NAMES = [
+'addresses',
+'blocks',
+'transactions_coinbase',
+'transactions_transfer',
+'transactions_token',
+'transactions_message',
+'transactions_latticePk',
+'transactions_slave',
+'transactions_transfertoken',
+'transactions_others',
+'errors_get_data',
+]
+
+
+
+
+
 SQL_CREATE_TABLES_RAW = [
 '''CREATE TABLE IF NOT EXISTS addresses 
     (address TEXT PRIMARY KEY, 
     balance BIGINT,         
     nonce INT,
-    ots_bitfield TEXT,
-    transaction_hashes TEXT,
-    tokens TEXT,
-    latticePK_list TEXT,
-    slave_pks_access_type TEXT,
-    ots_counter INT,            
+    use_otskey_count INT,
+    transaction_hash_count INT,
+    tokens_count INT,
+    slaves_count INT, 
+    ots_bitfield TEXT[],
+    ots_bitfield_page_number BIGINT,
+    bitfields TEXT[],
+    data_list TEXT[],
+    transactionhash_list TEXT[],
+    kyber_pk TEXT,
+    multi_sig_addresses_hashes_address TEXT,
+    multi_sig_addresses_hashes_nonce BIGINT,
+    multi_sig_addresses_hashes_weights TEXT[],
+    multi_sig_addresses_list_hashes TEXT[],
     first_seen TIMESTAMP WITHOUT TIME ZONE, 
     last_seen TIMESTAMP WITHOUT TIME ZONE, 
     custom_name text
     )''',   
+
+
 
 '''CREATE TABLE IF NOT EXISTS blocks 
     (block_number BIGINT PRIMARY KEY,
@@ -59,6 +87,7 @@ SQL_CREATE_TABLES_RAW = [
     (transaction_hash TEXT PRIMARY KEY,
     block_number BIGINT REFERENCES blocks(block_number),
     fee BIGINT,
+    master_addr TEXT REFERENCES addresses(address),
     public_key TEXT,
     signature TEXT,
     nonce BIGINT,
@@ -75,7 +104,7 @@ SQL_CREATE_TABLES_RAW = [
     message_hash TEXT,
     message_text TEXT,  
     block_number BIGINT REFERENCES blocks(block_number),
-    master_addr TEXT,
+    master_addr TEXT REFERENCES addresses(address),
     fee BIGINT,
     public_key TEXT,
     signature TEXT,
@@ -86,7 +115,7 @@ SQL_CREATE_TABLES_RAW = [
 '''CREATE TABLE IF NOT EXISTS transactions_latticePk
     (transaction_hash TEXT PRIMARY KEY,
     block_number BIGINT REFERENCES blocks(block_number),
-    master_addr TEXT,
+    master_addr TEXT REFERENCES addresses(address),
     fee BIGINT,
     public_key TEXT,
     signature TEXT,
@@ -100,6 +129,7 @@ SQL_CREATE_TABLES_RAW = [
     (transaction_hash TEXT,
     block_number BIGINT REFERENCES blocks(block_number),
     public_key TEXT,
+    master_addr TEXT REFERENCES addresses(address),
     fee BIGINT,
     signature TEXT,
     nonce BIGINT,
@@ -112,26 +142,27 @@ SQL_CREATE_TABLES_RAW = [
     (token_txhash TEXT,
     transaction_hash TEXT,
     block_number BIGINT REFERENCES blocks(block_number),
+    master_addr TEXT REFERENCES addresses(address),
     fee BIGINT,
     public_key TEXT,
     signature TEXT,
     nonce BIGINT,
     timestamp TIMESTAMP WITHOUT TIME ZONE,
     addr_to TEXT REFERENCES addresses(address),
-    amount BIGINT
+    amount NUMERIC
     )''',  
 
 '''CREATE TABLE IF NOT EXISTS transactions_others
     (transaction_hash TEXT PRIMARY KEY,
     block_number BIGINT REFERENCES blocks(block_number),
-    master_addr TEXT,
+    master_addr TEXT REFERENCES addresses(address),
     type TEXT,
     data TEXT,
     timestamp TIMESTAMP WITHOUT TIME ZONE
     )''', 
 
 
-'''CREATE TABLE IF NOT EXISTS errors 
+'''CREATE TABLE IF NOT EXISTS errors_get_data 
     (date TIMESTAMP WITHOUT TIME ZONE,
     location TEXT,
     data TEXT,

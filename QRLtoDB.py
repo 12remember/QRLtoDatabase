@@ -28,7 +28,8 @@ def createDB(database):
     if database == 'postgres':
         PostgresDB.createDB()
     elif database == 'sqlite':
-        print('localfile will be created when create_tables is used')
+        SqliteDB.createTables()
+        print('also created the tables')
     elif database == 'mongodb':
         print('database will be created when writing the data')
     elif database == 'neo4j':
@@ -53,7 +54,7 @@ def dropDB(database):
     if database == 'postgres':
         PostgresDB.dropDB()
     elif database == 'sqlite':
-        print('Sqlite doenst support drop Database, Mannually delete the local database inside the directory')
+        print('Sqlite doenst support drop Database, Manually delete the local database inside the directory')
     elif database == 'mongodb':
         MongoDB.dropDB()
     elif database == 'neo4j':
@@ -203,7 +204,7 @@ if __name__ == "__main__":
     if args.drop_db :
         if args.database is None:
             parser.error('Select a database, example: -db sqlite')
-        elif ask_confirm("Are you sure you want to DROP the DATABASE ?"):        
+        elif ask_confirm("Are you sure you want to DROP the DATABASE ? All data will be removed !!!!"):        
             dropDB(args.database)              
         else:
             pass  
@@ -212,7 +213,7 @@ if __name__ == "__main__":
     if args.drop_tables:
         if args.database is None:
             parser.error('Select a database, example: -db sqlite')
-        elif ask_confirm("Are you sure you want to DROP ALL tables?"):        
+        elif ask_confirm("Are you sure you want to DROP ALL tables? All data will be removed !!!!"):        
             dropTables(args.database)              
         else:
             pass  
@@ -221,7 +222,7 @@ if __name__ == "__main__":
     if args.truncate_tables:
         if args.database is None:
             parser.error('Select a database, example: -db sqlite')
-        elif ask_confirm("Are you sure you want to truncate ALL tables?"):        
+        elif ask_confirm("Are you sure you want to truncate ALL tables? All data will be removed !!!!"):        
             truncateTables(args.database)              
         else:
             pass    
@@ -230,7 +231,7 @@ if __name__ == "__main__":
     if args.recreate_tables:
         if args.database is None:
             parser.error('Select a database, example: -db sqlite')
-        elif ask_confirm("Are you sure you want to RECREATE ALL tables?"):        
+        elif ask_confirm("Are you sure you want to RECREATE ALL tables? All data will be removed !!!!"):        
             recreateTables(args.database)              
         else:
             pass              

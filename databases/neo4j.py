@@ -148,7 +148,7 @@ class Neo4jDB(object):
             print('Error while getting block data')    
             eData={}
             eData["date"], eData["location"], eData["traceback"], eData["data"], eData["error"], eData["blocknumber"] = datetime.now(), 'getBlockData', str(traceback.format_exc()), "" , str(e), ""
-            coll, data = "errors" , eData
+            coll, data = "errors_get_data" , eData
             Neo4jDB.insertData(coll, data)      
             raise
         finally:
@@ -231,7 +231,7 @@ class Neo4jDB(object):
             print('Error while getting transaction data')
             eData={}
             eData["date"], eData["location"], eData["traceback"], eData["data"], eData["error"], eData["blocknumber"] = datetime.now(), 'getTransactionData', str(traceback.format_exc()),  str(t) , str(e), block_number
-            coll, data = "errors" , eData
+            coll, data = "errors_get_data" , eData
             Neo4jDB.insertData(coll, data)                
             raise
 
@@ -257,7 +257,7 @@ class Neo4jDB(object):
             print('Error while getting address data')
             eData={}
             eData["date"], eData["location"], eData["traceback"], eData["data"], eData["error"], eData["blocknumber"] = datetime.now(), 'getAddressData', str(traceback.format_exc()), b64Addr , str(e), block_number
-            coll, data = "errors" , eData
+            coll, data = "errors_get_data" , eData
             Neo4jDB.insertData(coll, data)                   
             raise
 

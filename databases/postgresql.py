@@ -59,7 +59,7 @@ class PostgresDB(object):
                 eData={}
                 eData["date"], eData["location"], eData["traceback"], eData["data"] =  datetime.now(), 'insertData', str(traceback.format_exc()), str(data)
                 eData["error"], eData["blocknumber"] = str(e), ""            
-                table, data = "errors" , [eData]
+                table, data = "errors_get_data" , [eData]
                 PostgresDB.insertData(table, data) 
                 print('Psycopg2 error while inserting data into Database')
                 raise 
@@ -69,7 +69,7 @@ class PostgresDB(object):
                 eData={}
                 eData["date"], eData["location"], eData["traceback"], eData["data"] =  datetime.now(), 'insertData', str(traceback.format_exc()), str(data)
                 eData["error"], eData["blocknumber"] =  str(e), ""            
-                table, data = "errors" , [eData]
+                table, data = "errors_get_data" , [eData]
                 PostgresDB.insertData(table, data)      
                 print('Psycopg2 error while inserting data into Database')
                 raise 
@@ -177,28 +177,30 @@ class PostgresDB(object):
 
     
     def dropTables():
-        DB_CONNECTION = PostgresDB.connect()
-        with DB_CONNECTION.cursor() as cur:
-            try:
-                cur.execute(SQL_SELECT_TABLES_POSTGRES)
-                rows = cur.fetchall()
-                
-                for row in rows:
-                    print(" ".join(["Dropping table:" , row[1]]))
-                    cur.execute(" ".join(["drop table" , row[1] , "cascade"]))
-                
-                DB_CONNECTION.commit() 
+        try:    
+            DB_CONNECTION = PostgresDB.connect()
+            with DB_CONNECTION.cursor() as cur:
             
-            except (psycopg2.Error, psycopg2.DatabaseError , psycopg2.DataError) as e:
-                print(e)
-                print('Psycopg2 error while dropping Tables')
-                raise                    
-            except Exception as e:
-                print(e)
-                print('Error while dropping Tables')
-            finally:
-                cur.close()
-
+                for table in RAW_TABLES_NAMES :
+                    try:
+                        print(" ".join(["Dropping table:" , table]))
+                        cur.execute(" ".join(["drop table" , table , "cascade"]))
+                    except:
+                        pass                
+                DB_CONNECTION.commit() 
+                print('Tables Dropped')       
+        except (psycopg2.Error, psycopg2.DatabaseError , psycopg2.DataError) as e:
+            print(e)
+            print('Psycopg2 error while Dropping Tables') 
+            raise
+        except Exception as e:
+            print(e)
+            print('Error while Dropping Tables') 
+            raise
+        finally:
+            cur.close()
+    
+    
     
     def truncateTables():
         DB_CONNECTION = PostgresDB.connect()
@@ -264,7 +266,7 @@ class PostgresDB(object):
                 eData={}
                 eData["date"], eData["location"], eData["traceback"] =  datetime.now(), 'getBlockData', str(traceback.format_exc())
                 eData["error"], eData["blocknumber"] = str(e), ""  
-                table, data = "errors" , [eData]
+                table, data = "errors_get_data" , [eData]
                 PostgresDB.insertData(table, data)      
                 raise
 
@@ -351,7 +353,7 @@ class PostgresDB(object):
                 eData={}
                 eData["date"], eData["location"], eData["traceback"] =  datetime.now(), 'getTransactionData', str(traceback.format_exc())
                 eData["error"], eData["blocknumber"] =  str(e), ""  
-                table, data = "errors" , [eData]
+                table, data = "errors_get_data" , [eData]
                 PostgresDB.insertData(table, data)                
                 raise
 
@@ -384,7 +386,7 @@ class PostgresDB(object):
                 eData={}
                 eData["date"], eData["location"], eData["traceback"], eData["data"] = datetime.now(), 'getAddressData', str(traceback.format_exc()), b64Addr 
                 eData["error"], eData["blocknumber"] = str(e), block_number
-                table, data = "errors" , [eData]
+                table, data = "errors_get_data" , [eData]
                 PostgresDB.insertData(table, data)                   
                 raise
             

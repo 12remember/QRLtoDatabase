@@ -49,7 +49,7 @@ class SqliteDB(object):
                 dataKeyType = [type(k) for k in data.keys()]
                 eData["date"], eData["location"], eData["traceback"], eData["data"] =  datetime.now(), 'insertData', str(traceback.format_exc()), str(data)
                 eData["data_keys"], eData["data_key_type"], eData["error"], eData["blocknumber"] =  str(dataKeys), str(dataKeyType), str(e), "" 
-                table, data = "errors" , eData
+                table, data = "errors_get_data" , eData
                 SqliteDB.insertData(table, data)      
                 print('Error while inserting data into Database')
                 raise     
@@ -74,7 +74,7 @@ class SqliteDB(object):
                 print(e)
                 eData={}
                 eData["date"], eData["location"], eData["traceback"], eData["data"], eData["error"], eData["blocknumber"] = datetime.now(), 'updateData', str(traceback.format_exc()), str(data) , str(e), " "
-                table, data = "errors" , eData
+                table, data = "errors_get_data" , eData
                 SqliteDB.insertData(table, data)      
                 print('Error while updating data into Database')
                 raise 
@@ -182,7 +182,7 @@ class SqliteDB(object):
             
                 eData={}
                 eData["date"], eData["location"], eData["traceback"], eData["data"], eData["error"], eData["blocknumber"] = datetime.now(), 'getBlockData', str(traceback.format_exc()), " " , str(e), " "
-                table, data = "errors" , eData
+                table, data = "errors_get_data" , eData
                 SqliteDB.insertData(table, data)      
                 raise
 
@@ -268,7 +268,7 @@ class SqliteDB(object):
                 print('Error while getting transaction data')
                 eData={}
                 eData["date"], eData["location"], eData["traceback"], eData["data"], eData["error"], eData["blocknumber"] = datetime.now(), 'getTransactionData', str(traceback.format_exc()),  str(t) , str(e), block_number
-                table, data = "errors" , eData
+                table, data = "errors_get_data" , eData
                 SqliteDB.insertData(table, data)                
                 raise
 
@@ -298,7 +298,7 @@ class SqliteDB(object):
                 print('Error while getting address data')
                 eData={}
                 eData["date"], eData["location"], eData["traceback"], eData["data"], eData["error"], eData["blocknumber"] = datetime.now(), 'getAddressData', str(traceback.format_exc()), b64Addr , str(e), block_number
-                table, data = "errors" , eData
+                table, data = "errors_get_data" , eData
                 SqliteDB.insertData(table, data)                   
                 raise
             
