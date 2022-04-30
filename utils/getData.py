@@ -291,72 +291,48 @@ class getData:
             addrData.ParseFromString(db.get(addrByte))
             dictData = MessageToDict(addrData)
 
-
             OTSBitfieldByPageData = qrl_pb2.OTSBitfieldByPage() 
             OTSBitfieldByPageData.ParseFromString(db.get(addrByte))
             OTSBitfieldByPageDic = MessageToDict(OTSBitfieldByPageData)
-            print(OTSBitfieldByPageDic)  
-            print('OTSBitfieldByPage')   
-            
-                    
+            #print(OTSBitfieldByPageDic)  
+            #print('OTSBitfieldByPage')   
+                            
             DataList = qrl_pb2.DataList() 
             DataListData = qrl_pb2.DataList() 
             DataListData.ParseFromString(db.get(addrByte))
             DataListDic = MessageToDict(DataListData) 
             #print(DataListDic)   
             #print('DataList') 
-            
-            
+                        
             BitfieldData = qrl_pb2.Bitfield() 
             BitfieldData.ParseFromString(db.get(addrByte))
             BitfieldDic = MessageToDict(BitfieldData) 
             #print(BitfieldDic)   
             #print('Bitfield')   
-            
-            
+                    
             TransactionHashListData = qrl_pb2.TransactionHashList() 
             TransactionHashListData.ParseFromString(db.get(addrByte))
             TransactionHashListDic = MessageToDict(TransactionHashListData) 
             #print(TransactionHashListDic)
             #print('TransactionHashList')        
             
-
             LatticePKData = qrl_pb2.LatticePK() 
             LatticePKData.ParseFromString(db.get(addrByte))
             LatticePKDic = MessageToDict(LatticePKData)
             #print(LatticePKDic)
             #print('LatticePK')        
             
-            #SlavePksAccessTypeEntryData = qrl_pb2.SlavePksAccessTypeEntry() 
-            #SlavePksAccessTypeEntryData.ParseFromString(db.get(addrByte))
-            #SlavePksAccessTypeEntryDic = MessageToDict(SlavePksAccessTypeEntryData)
-            #print(SlavePksAccessTypeEntryDic)
-            #print('SlavePksAccessTypeEntry')       
-
             MultiSigAddressStateData = qrl_pb2.MultiSigAddressState() 
             MultiSigAddressStateData.ParseFromString(db.get(addrByte))
             MultiSigAddressStateDic = MessageToDict(MultiSigAddressStateData)
-            print(MultiSigAddressStateDic)
-            print('MultiSigAddressStateDic')     
+            #print(MultiSigAddressStateDic)
+            #print('MultiSigAddressStateDic')     
             
             MultiSigAddressesListData = qrl_pb2.MultiSigAddressesList() 
             MultiSigAddressesListData.ParseFromString(db.get(addrByte))
             MultiSigAddressesListDic = MessageToDict(MultiSigAddressesListData)
-            print(MultiSigAddressesListDic)
-            print('MultiSigAddressesListDic')                 
-
-
-
-            #paginatedData.ParseFromString(db.get(addrByte))
-            #ots2Data = MessageToDict(otsData)
-            #print(ots2Data)
-            
-
-        #    if (len(dictData) >= 4):
-        #        print('--------------------') 
-        #        for key, value in dictData.items() :
-        #            print(key)
-        #        print('--------------------')     
+            #print(MultiSigAddressesListDic)
+            #print('MultiSigAddressesListDic')                 
 
         
             addressData = {}    
@@ -378,7 +354,6 @@ class getData:
             if "slavesCount" in dictData:
                 addressData["slaves_count"] = dictData["slavesCount"]                   
                 
-            
             
             
             if "otsBitfield" in OTSBitfieldByPageDic:
@@ -412,31 +387,6 @@ class getData:
                 addressData["multi_sig_addresses_list_hashes"] = MultiSigAddressesListDic["hashes"]           
             
             
-            
-            '''    
-            if "otsBitfield" in dictData:
-                addressData["ots_bitfield"] = dictData["otsBitfield"]
-                addressData["ots_bitfield"] = list(map(lambda x: json.dumps(x), addressData["ots_bitfield"]))
-                print(addressData["ots_bitfield"])
-        
-            if "transactionHashes" in dictData:
-                addressData["transaction_hashes"] = dictData["transactionHashes"]
-                addressData["transaction_hashes"] = list(map(lambda x: json.dumps(x), addressData["transaction_hashes"]))
-     
-            if "tokens" in dictData:
-                addressData["tokens"] = dictData["tokens"]
-                addressData["tokens"] = list(map(lambda x: json.dumps(x), addressData["tokens"]))
-
-            if "latticePKList" in dictData:
-                addressData["latticePK_list"] = dictData["latticePKList"]
-                addressData["latticePK_list"] = list(map(lambda x: json.dumps(x), addressData["latticePK_list"]))
-   
-            if "slavePksAccessType" in dictData:
-                addressData["slave_pks_access_type"] = dictData["slavePksAccessType"]
-                addressData["slave_pks_access_type"] = list(map(lambda x: json.dumps(x), addressData["slave_pks_access_type"]))
-
-
-            '''
             
             addressData["last_seen"] = timeStamp
             addressData["first_seen"] = timeStamp  
