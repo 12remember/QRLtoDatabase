@@ -28,13 +28,33 @@ class getData:
         dictData = MessageToDict(pbdata)
 
 
-        # need to get help getting the following data from plyvel.DB 
-        # BlockDataPoint
-        # BlockExtended
+        # BlockDataPoint and BlockExtended not working yet
+
+        #BlockDataPointData = qrl_pb2.BlockDataPoint()
+        #BlockDataPointData.ParseFromString(bytes(db.get(hashHeader)))
+        #print(BlockDataPointData)
+        #BlockDataPointDic = MessageToDict(BlockDataPointData)
         
-        # see for more information https://api.theqrl.org/?python#block
+        #print(BlockDataPointDic)
+        #print('BlockDataPoint')
         
-        # neeed to get extended block data 
+        
+        #LatticePKData = qrl_pb2.LatticePK() 
+        #LatticePKData.ParseFromString(db.get(addrByte))
+        #LatticePKDic = MessageToDict(LatticePKData)
+        
+
+        #test = Parse(db.get(str(i).encode()), block_number_mapping)
+
+        #BlockExtendedData = qrl_pb2.BlockExtended()
+        #BlockExtendedData.ParseFromString(bytes(db.get(test)))
+        #print(BlockExtendedData)
+        #BlockExtendedDic = MessageToDict(BlockExtendedData)
+        #print(BlockExtendedDic)
+        #print('BlockExtended')
+
+
+
 
         blockData = {}
         blockData["block_number"] = i
@@ -101,7 +121,7 @@ class getData:
         return tData
     
         
-    def getTransactionDataToken(t, block_number, timestamp):        
+    def getTransactionDataToken(t, block_number, timestamp):    
         tData = getData.getTransactionData(t, block_number, timestamp)        
         tData["symbol"] = base64.b64decode(t["token"]["symbol"]).decode("utf-8") 
         tData["name"] = base64.b64decode(t["token"]["name"]).decode("utf-8") 
@@ -262,7 +282,8 @@ class getData:
         
     def getAddressData(source, b64Addr, timeStamp): 
         try:
-            addrData = qrl_pb2.AddressState()    
+            #addrData = qrl_pb2.AddressState() 
+            addrData = qrl_pb2.OptimizedAddressState()  
             addrByte = base64.b64decode(b64Addr)
             address = "Q" + addrByte.hex()
             
@@ -271,14 +292,72 @@ class getData:
             dictData = MessageToDict(addrData)
 
 
-            if (len(dictData) >= 4):
-                print('--------------------') 
-                for key, value in dictData.items() :
-                    print(key)
-                print('--------------------')     
-                print('--------------------') 
-                print('^^^^^^^^^^^^^^^^')
-                sys.exit("length of address > 4  check for more data to write") 
+            OTSBitfieldByPageData = qrl_pb2.OTSBitfieldByPage() 
+            OTSBitfieldByPageData.ParseFromString(db.get(addrByte))
+            OTSBitfieldByPageDic = MessageToDict(OTSBitfieldByPageData)
+            print(OTSBitfieldByPageDic)  
+            print('OTSBitfieldByPage')   
+            
+                    
+            DataList = qrl_pb2.DataList() 
+            DataListData = qrl_pb2.DataList() 
+            DataListData.ParseFromString(db.get(addrByte))
+            DataListDic = MessageToDict(DataListData) 
+            #print(DataListDic)   
+            #print('DataList') 
+            
+            
+            BitfieldData = qrl_pb2.Bitfield() 
+            BitfieldData.ParseFromString(db.get(addrByte))
+            BitfieldDic = MessageToDict(BitfieldData) 
+            #print(BitfieldDic)   
+            #print('Bitfield')   
+            
+            
+            TransactionHashListData = qrl_pb2.TransactionHashList() 
+            TransactionHashListData.ParseFromString(db.get(addrByte))
+            TransactionHashListDic = MessageToDict(TransactionHashListData) 
+            #print(TransactionHashListDic)
+            #print('TransactionHashList')        
+            
+
+            LatticePKData = qrl_pb2.LatticePK() 
+            LatticePKData.ParseFromString(db.get(addrByte))
+            LatticePKDic = MessageToDict(LatticePKData)
+            #print(LatticePKDic)
+            #print('LatticePK')        
+            
+            #SlavePksAccessTypeEntryData = qrl_pb2.SlavePksAccessTypeEntry() 
+            #SlavePksAccessTypeEntryData.ParseFromString(db.get(addrByte))
+            #SlavePksAccessTypeEntryDic = MessageToDict(SlavePksAccessTypeEntryData)
+            #print(SlavePksAccessTypeEntryDic)
+            #print('SlavePksAccessTypeEntry')       
+
+            MultiSigAddressStateData = qrl_pb2.MultiSigAddressState() 
+            MultiSigAddressStateData.ParseFromString(db.get(addrByte))
+            MultiSigAddressStateDic = MessageToDict(MultiSigAddressStateData)
+            print(MultiSigAddressStateDic)
+            print('MultiSigAddressStateDic')     
+            
+            MultiSigAddressesListData = qrl_pb2.MultiSigAddressesList() 
+            MultiSigAddressesListData.ParseFromString(db.get(addrByte))
+            MultiSigAddressesListDic = MessageToDict(MultiSigAddressesListData)
+            print(MultiSigAddressesListDic)
+            print('MultiSigAddressesListDic')                 
+
+
+
+            #paginatedData.ParseFromString(db.get(addrByte))
+            #ots2Data = MessageToDict(otsData)
+            #print(ots2Data)
+            
+
+        #    if (len(dictData) >= 4):
+        #        print('--------------------') 
+        #        for key, value in dictData.items() :
+        #            print(key)
+        #        print('--------------------')     
+
         
             addressData = {}    
             if "balance" in dictData:
@@ -286,12 +365,63 @@ class getData:
     
             if "nonce" in dictData:
                 addressData["nonce"] = dictData["nonce"]       
+
+            if "usedOtsKeyCount" in dictData:
+                addressData["use_otskey_count"] = dictData["usedOtsKeyCount"]               
+            
+            if "transactionHashCount" in dictData:
+                addressData["transaction_hash_count"] = dictData["transactionHashCount"]               
+
+            if "tokensCount" in dictData:
+                addressData["tokens_count"] = dictData["tokensCount"]   
                 
+            if "slavesCount" in dictData:
+                addressData["slaves_count"] = dictData["slavesCount"]                   
+                
+            
+            
+            
+            if "otsBitfield" in OTSBitfieldByPageDic:
+                addressData["ots_bitfield"] = OTSBitfieldByPageDic["otsBitfield"]
+    
+            if "pageNumber" in OTSBitfieldByPageDic:
+                addressData["ots_bitfield_page_number"] = OTSBitfieldByPageDic["pageNumber"]
+
+            if "values" in DataListDic:
+                addressData["data_list"] = DataListDic["values"]            
+            
+            if "bitfields" in BitfieldDic:
+                addressData["bitfields"] = BitfieldDic["bitfields"] 
+            
+            if "hashes" in TransactionHashListDic:
+                addressData["transactionhash_list"] = TransactionHashListDic["hashes"]         
+            
+            if "kyberPk" in LatticePKDic:
+                addressData["kyber_pk"] = LatticePKDic["kyberPk"]     
+            
+            if "address" in MultiSigAddressStateDic:
+                addressData["multi_sig_addresses_hashes_address"] = MultiSigAddressStateDic["address"]
+                
+            if "nonce" in MultiSigAddressStateDic:
+                addressData["multi_sig_addresses_hashes_nonce"] = MultiSigAddressStateDic["nonce"]   
+ 
+            if "weights" in MultiSigAddressStateDic:
+                addressData["multi_sig_addresses_hashes_weights"] = MultiSigAddressStateDic["weights"]                      
+
+            if "hashes" in MultiSigAddressesListDic:
+                addressData["multi_sig_addresses_list_hashes"] = MultiSigAddressesListDic["hashes"]           
+            
+            
+            
+            '''    
             if "otsBitfield" in dictData:
                 addressData["ots_bitfield"] = dictData["otsBitfield"]
+                addressData["ots_bitfield"] = list(map(lambda x: json.dumps(x), addressData["ots_bitfield"]))
+                print(addressData["ots_bitfield"])
         
             if "transactionHashes" in dictData:
                 addressData["transaction_hashes"] = dictData["transactionHashes"]
+                addressData["transaction_hashes"] = list(map(lambda x: json.dumps(x), addressData["transaction_hashes"]))
      
             if "tokens" in dictData:
                 addressData["tokens"] = dictData["tokens"]
@@ -305,9 +435,9 @@ class getData:
                 addressData["slave_pks_access_type"] = dictData["slavePksAccessType"]
                 addressData["slave_pks_access_type"] = list(map(lambda x: json.dumps(x), addressData["slave_pks_access_type"]))
 
-            if "otsCounter" in dictData:
-                addressData["ots_counter"] = dictData["otsCounter"]
 
+            '''
+            
             addressData["last_seen"] = timeStamp
             addressData["first_seen"] = timeStamp  
             addressData["address"] = address
