@@ -338,6 +338,8 @@ class getData:
             addressData = {}    
             if "balance" in dictData:
                 addressData["balance"] = dictData["balance"]
+            else:
+            	addressData["balance"] = "0"
     
             if "nonce" in dictData:
                 addressData["nonce"] = dictData["nonce"]       
