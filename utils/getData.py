@@ -6,6 +6,8 @@ from datetime import datetime
 import json
 import sys
 
+from qrl.core.PaginatedData import PaginatedData
+from qrl.core.PaginatedBitfield import PaginatedBitfield
 
 from qrl.generated import qrl_pb2
 from google.protobuf.json_format import MessageToJson, Parse, MessageToDict
@@ -290,6 +292,46 @@ class getData:
             db = plyvel.DB(source)
             addrData.ParseFromString(db.get(addrByte))
             dictData = MessageToDict(addrData)
+
+            #page = (ots_key_index // config.dev.ots_tracking_per_page) + 1
+            page = (5 // 8192) + 1
+            print(page)
+            print(type(page))
+            PaginatedBitfieldKey = PaginatedBitfield.generate_bitfield_key(PaginatedBitfield(False, db), addrByte, page) 
+            print(PaginatedBitfieldKey)
+            print(type(PaginatedBitfieldKey))
+            print('======================================2')
+            
+                  
+            #PaginatedBitfieldData = PaginatedBitfield.get_paginated_data(PaginatedBitfield(False, db), PaginatedBitfieldKey, 1) 
+            # error door db variabele
+            
+            
+            pbData = db.get(PaginatedBitfieldKey)  #    (PaginatedBitfield(False, db) + b'' + PaginatedBitfieldKey + b'_' + page.to_bytes(8, byteorder='big', signed=False))
+            print(pbData)
+            print('======================================3')
+            if pbData != None:
+                data_list = qrl_pb2.DataList()
+                print(data_list)
+                print('======================================4')
+                data_list.ParseFromString(bytes(pbData))
+                
+                print(data_list)
+                print('======================================5')
+            
+                data = list(data_list.values)
+                print(data)
+                print('======================================5')
+            
+            
+            #print(PaginatedBitfieldData)
+            #PaginatedBitfieldData.ParseFromString(db.get(addrByte))
+            #print(PaginatedBitfieldData)
+            #PaginatedBitfieldDic = MessageToDict(PaginatedBitfieldData)
+            #print(PaginatedBitfieldDic)  
+            #print('PaginatedBitfield')   
+
+ 
 
             OTSBitfieldByPageData = qrl_pb2.OTSBitfieldByPage() 
             OTSBitfieldByPageData.ParseFromString(db.get(addrByte))
