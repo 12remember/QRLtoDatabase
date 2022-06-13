@@ -6,6 +6,9 @@ from datetime import datetime
 import json
 import sys
 
+from qrl.core.PaginatedData import PaginatedData
+from qrl.core.PaginatedBitfield import PaginatedBitfield
+from qrl.core.misc.db import DB
 
 from qrl.generated import qrl_pb2
 from google.protobuf.json_format import MessageToJson, Parse, MessageToDict
@@ -14,17 +17,17 @@ class getData:
     
 
     def getBlockHeight(source):
-        db = plyvel.DB(source)
-        blockheight = int.from_bytes(db.get(b'blockheight'), byteorder='big', signed=False)
+        dbb = plyvel.DB(source)
+        blockheight = int.from_bytes(dbb.get(b'blockheight'), byteorder='big', signed=False)
         return blockheight
         
     def getBlockData(i, source ):        
-        db = plyvel.DB(source)      
+        dbb = plyvel.DB(source)      
         pbdata = qrl_pb2.Block()
         block_number_mapping = qrl_pb2.BlockNumberMapping()            
             
-        hashHeader = Parse(db.get(str(i).encode()), block_number_mapping).headerhash
-        pbdata.ParseFromString(bytes(db.get(hashHeader)))
+        hashHeader = Parse(dbb.get(str(i).encode()), block_number_mapping).headerhash
+        pbdata.ParseFromString(bytes(dbb.get(hashHeader)))
         dictData = MessageToDict(pbdata)
 
 
@@ -278,58 +281,82 @@ class getData:
         
         tData['data'] = str(t)
         return tData      
-    
-        
+
     def getAddressData(source, b64Addr, timeStamp): 
         try:
             #addrData = qrl_pb2.AddressState() 
             addrData = qrl_pb2.OptimizedAddressState()  
             addrByte = base64.b64decode(b64Addr)
             address = "Q" + addrByte.hex()
-            
-            db = plyvel.DB(source)
-            addrData.ParseFromString(db.get(addrByte))
+            tree_dict =	{
+                    0: 256,
+                    8: 256,
+                    10: 1024,
+                    12 : 4096,
+                    14: 16384,
+                    16: 65536,
+                    18 : 4096,
+            }
+
+            tree_height = int(address[4]) * 2
+
+            dbb = plyvel.DB(source)
+            addrData.ParseFromString(dbb.get(addrByte))
             dictData = MessageToDict(addrData)
+            databasee = DB()
+            
+            n = 0
+            OTSBitfieldByPageDic = []
+            while n < tree_dict[tree_height]:
+                page = (n // 8192) + 1
+                PaginatedBitfieldKey = PaginatedBitfield.generate_bitfield_key(PaginatedBitfield(False, databasee), addrByte, page) 
+                obj = PaginatedBitfield(False, databasee)
+                obj.load_bitfield(addrByte, n)
+                ots_bitfield = obj.key_value[PaginatedBitfieldKey]
+                OTSBitfieldByPageDic.append(PaginatedBitfield.ots_key_reuse(ots_bitfield, n))
+                # print(PaginatedBitfield.ots_key_reuse(ots_bitfield, n))
+                print(OTSBitfieldByPageDic)
+                n = n + 1
 
             OTSBitfieldByPageData = qrl_pb2.OTSBitfieldByPage() 
-            OTSBitfieldByPageData.ParseFromString(db.get(addrByte))
-            OTSBitfieldByPageDic = MessageToDict(OTSBitfieldByPageData)
+            OTSBitfieldByPageData.ParseFromString(dbb.get(addrByte))
+            # OTSBitfieldByPageDic = MessageToDict(OTSBitfieldByPageData)
             #print(OTSBitfieldByPageDic)  
             #print('OTSBitfieldByPage')   
                             
             DataList = qrl_pb2.DataList() 
             DataListData = qrl_pb2.DataList() 
-            DataListData.ParseFromString(db.get(addrByte))
+            DataListData.ParseFromString(dbb.get(addrByte))
             DataListDic = MessageToDict(DataListData) 
             #print(DataListDic)   
             #print('DataList') 
                         
             BitfieldData = qrl_pb2.Bitfield() 
-            BitfieldData.ParseFromString(db.get(addrByte))
+            BitfieldData.ParseFromString(dbb.get(addrByte))
             BitfieldDic = MessageToDict(BitfieldData) 
             #print(BitfieldDic)   
             #print('Bitfield')   
                     
             TransactionHashListData = qrl_pb2.TransactionHashList() 
-            TransactionHashListData.ParseFromString(db.get(addrByte))
+            TransactionHashListData.ParseFromString(dbb.get(addrByte))
             TransactionHashListDic = MessageToDict(TransactionHashListData) 
             #print(TransactionHashListDic)
             #print('TransactionHashList')        
             
             LatticePKData = qrl_pb2.LatticePK() 
-            LatticePKData.ParseFromString(db.get(addrByte))
+            LatticePKData.ParseFromString(dbb.get(addrByte))
             LatticePKDic = MessageToDict(LatticePKData)
             #print(LatticePKDic)
             #print('LatticePK')        
             
             MultiSigAddressStateData = qrl_pb2.MultiSigAddressState() 
-            MultiSigAddressStateData.ParseFromString(db.get(addrByte))
+            MultiSigAddressStateData.ParseFromString(dbb.get(addrByte))
             MultiSigAddressStateDic = MessageToDict(MultiSigAddressStateData)
             #print(MultiSigAddressStateDic)
             #print('MultiSigAddressStateDic')     
             
             MultiSigAddressesListData = qrl_pb2.MultiSigAddressesList() 
-            MultiSigAddressesListData.ParseFromString(db.get(addrByte))
+            MultiSigAddressesListData.ParseFromString(dbb.get(addrByte))
             MultiSigAddressesListDic = MessageToDict(MultiSigAddressesListData)
             #print(MultiSigAddressesListDic)
             #print('MultiSigAddressesListDic')                 
@@ -358,8 +385,8 @@ class getData:
                 
             
             
-            if "otsBitfield" in OTSBitfieldByPageDic:
-                addressData["ots_bitfield"] = OTSBitfieldByPageDic["otsBitfield"]
+            if OTSBitfieldByPageDic:
+                addressData["ots_bitfield"] = OTSBitfieldByPageDic
     
             if "pageNumber" in OTSBitfieldByPageDic:
                 addressData["ots_bitfield_page_number"] = OTSBitfieldByPageDic["pageNumber"]
