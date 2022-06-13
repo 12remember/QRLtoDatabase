@@ -12,8 +12,18 @@ from qrl.core.misc.db import DB
 
 from qrl.generated import qrl_pb2
 from google.protobuf.json_format import MessageToJson, Parse, MessageToDict
+import threading
 
-class getData:
+class getData(threading.Thread):
+    def __init__(self, threadID, name, counter):
+      threading.Thread.__init__(self)
+      self.threadID = threadID
+      self.name = name
+      self.counter = counter
+    def run(self):
+      print("Starting " + self.name)
+      print("Exiting " + self.name)
+
     
 
     def getBlockHeight(source):
@@ -291,11 +301,11 @@ class getData:
             tree_dict =	{
                     0: 256,
                     8: 256,
-                    10: 1024,
-                    12 : 4096,
-                    14: 16384,
-                    16: 65536,
-                    18 : 4096,
+                    10: 256,
+                    12 : 256,
+                    14: 256,
+                    16: 256,
+                    18 : 256,
             }
 
             tree_height = int(address[4]) * 2
@@ -306,6 +316,7 @@ class getData:
             databasee = DB()
             
             n = 0
+            false_loop = 0
             OTSBitfieldByPageDic = []
             while n < tree_dict[tree_height]:
                 page = (n // 8192) + 1
@@ -314,8 +325,14 @@ class getData:
                 obj.load_bitfield(addrByte, n)
                 ots_bitfield = obj.key_value[PaginatedBitfieldKey]
                 OTSBitfieldByPageDic.append(PaginatedBitfield.ots_key_reuse(ots_bitfield, n))
+
+                if PaginatedBitfield.ots_key_reuse(ots_bitfield, n) == False:
+                    false_loop = false_loop + 1
+                    print("False")
+                    print(false_loop)
+                    if false_loop > 5:
+                        break
                 # print(PaginatedBitfield.ots_key_reuse(ots_bitfield, n))
-                print(OTSBitfieldByPageDic)
                 n = n + 1
 
             OTSBitfieldByPageData = qrl_pb2.OTSBitfieldByPage() 
@@ -427,3 +444,21 @@ class getData:
         except Exception as e:                
             print(e)
             raise
+
+thread1 = getData(1, "Thread-1", 1)
+thread2 = getData(2, "Thread-2", 2)
+thread3 = getData(3, "Thread-3", 3)
+thread4 = getData(4, "Thread-2", 4)
+thread5 = getData(5, "Thread-1", 5)
+thread6 = getData(6, "Thread-2", 6)
+thread7 = getData(7, "Thread-3", 7)
+thread8 = getData(8, "Thread-2", 8)
+
+thread1.start()
+thread2.start()
+thread3.start()
+thread4.start()
+thread5.start()
+thread6.start()
+thread7.start()
+thread8.start()
