@@ -324,46 +324,6 @@ class getData:
                 # print(PaginatedBitfield.ots_key_reuse(ots_bitfield, n))
                 n = n + 1
 
-            #page = (ots_key_index // config.dev.ots_tracking_per_page) + 1
-            page = (5 // 8192) + 1
-            print(page)
-            print(type(page))
-            PaginatedBitfieldKey = PaginatedBitfield.generate_bitfield_key(PaginatedBitfield(False, db), addrByte, page) 
-            print(PaginatedBitfieldKey)
-            print(type(PaginatedBitfieldKey))
-            print('======================================2')
-            
-                  
-            #PaginatedBitfieldData = PaginatedBitfield.get_paginated_data(PaginatedBitfield(False, db), PaginatedBitfieldKey, 1) 
-            # error door db variabele
-            
-            
-            pbData = db.get(PaginatedBitfieldKey)  #    (PaginatedBitfield(False, db) + b'' + PaginatedBitfieldKey + b'_' + page.to_bytes(8, byteorder='big', signed=False))
-            print(pbData)
-            print('======================================3')
-            if pbData != None:
-                data_list = qrl_pb2.DataList()
-                print(data_list)
-                print('======================================4')
-                data_list.ParseFromString(bytes(pbData))
-                
-                print(data_list)
-                print('======================================5')
-            
-                data = list(data_list.values)
-                print(data)
-                print('======================================5')
-            
-            
-            #print(PaginatedBitfieldData)
-            #PaginatedBitfieldData.ParseFromString(db.get(addrByte))
-            #print(PaginatedBitfieldData)
-            #PaginatedBitfieldDic = MessageToDict(PaginatedBitfieldData)
-            #print(PaginatedBitfieldDic)  
-            #print('PaginatedBitfield')   
-
- 
-
             OTSBitfieldByPageData = qrl_pb2.OTSBitfieldByPage() 
             OTSBitfieldByPageData.ParseFromString(dbb.get(addrByte))
             # OTSBitfieldByPageDic = MessageToDict(OTSBitfieldByPageData)
@@ -495,4 +455,3 @@ if __name__ == "__main__":
     p6.start()
     p7.start()
     p8.start()
-
