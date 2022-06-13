@@ -12,19 +12,9 @@ from qrl.core.misc.db import DB
 
 from qrl.generated import qrl_pb2
 from google.protobuf.json_format import MessageToJson, Parse, MessageToDict
-import threading
+import multiprocessing
 
-class getData(threading.Thread):
-    def __init__(self, threadID, name, counter):
-      threading.Thread.__init__(self)
-      self.threadID = threadID
-      self.name = name
-      self.counter = counter
-    def run(self):
-      print("Starting " + self.name)
-      print("Exiting " + self.name)
-
-    
+class getData:
 
     def getBlockHeight(source):
         dbb = plyvel.DB(source)
@@ -318,6 +308,7 @@ class getData(threading.Thread):
             n = 0
             false_loop = 0
             OTSBitfieldByPageDic = []
+
             while n < tree_dict[tree_height]:
                 page = (n // 8192) + 1
                 PaginatedBitfieldKey = PaginatedBitfield.generate_bitfield_key(PaginatedBitfield(False, databasee), addrByte, page) 
@@ -328,8 +319,6 @@ class getData(threading.Thread):
 
                 if PaginatedBitfield.ots_key_reuse(ots_bitfield, n) == False:
                     false_loop = false_loop + 1
-                    print("False")
-                    print(false_loop)
                     if false_loop > 5:
                         break
                 # print(PaginatedBitfield.ots_key_reuse(ots_bitfield, n))
@@ -445,20 +434,25 @@ class getData(threading.Thread):
             print(e)
             raise
 
-thread1 = getData(1, "Thread-1", 1)
-thread2 = getData(2, "Thread-2", 2)
-thread3 = getData(3, "Thread-3", 3)
-thread4 = getData(4, "Thread-2", 4)
-thread5 = getData(5, "Thread-1", 5)
-thread6 = getData(6, "Thread-2", 6)
-thread7 = getData(7, "Thread-3", 7)
-thread8 = getData(8, "Thread-2", 8)
+if __name__ == "__main__":
 
-thread1.start()
-thread2.start()
-thread3.start()
-thread4.start()
-thread5.start()
-thread6.start()
-thread7.start()
-thread8.start()
+    # Creates two processes
+    p1 = multiprocessing.Process(target=getData)
+    p2 = multiprocessing.Process(target=getData)
+    p3 = multiprocessing.Process(target=getData)
+    p4 = multiprocessing.Process(target=getData)
+    p5 = multiprocessing.Process(target=getData)
+    p6 = multiprocessing.Process(target=getData)
+    p7 = multiprocessing.Process(target=getData)
+    p8 = multiprocessing.Process(target=getData)
+
+    # Starts both processes
+    p1.start()
+    p2.start()
+    p3.start()
+    p4.start()
+    p5.start()
+    p6.start()
+    p7.start()
+    p8.start()
+
