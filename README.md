@@ -7,7 +7,7 @@ The aim for this project is to make QRL blockchain data accessible in popular da
 - Currently Postgres, SQL and Mongodb are working
 - Data completeness needs to be checked
 - Script still needs a long run to check for errors
-- Neo4j is not working yet, but in the pipeline
+
 
 
 
@@ -25,19 +25,20 @@ The aim for this project is to make QRL blockchain data accessible in popular da
   - Postgres [pgadmin](https://www.pgadmin.org/download "pgAdmin download")
   - Sqlite [sqlitebrowser](https://sqlitebrowser.org/ "sqlite browser")
 
+4. Install Poetry [poetry](https://python-poetry.org/docs/ "how to install Poetry")
 
 ## Running
 1. inside directory run:
   - to create env
     ```
-    pip install pipenv
-    pipenv install 
-    pipenv shell
+    poetry init
+    poetry install
+    poetry shell 
     ```
   - Create database and tables/Collections 
     ``` 
-    python QRLtoDB.py --create_db -db (your chosen database)
-    python QRLtoDB.py --create_tables -db (your chosen database)
+    python QRLtoDB.py --create_db -db [your chosen database]
+    python QRLtoDB.py --create_tables -db [your chosen database]
     ```
   - Get the data
     ```
